@@ -1,5 +1,5 @@
 
-# Created by https://www.gitignore.io/api/haskell
+# Created by https://www.gitignore.io/api/haskell,gradle
 
 ### Haskell ###
 dist
@@ -23,4 +23,20 @@ cabal.sandbox.config
 cabal.project.local
 .HTF/
 
-# End of https://www.gitignore.io/api/haskell
+### Gradle ###
+.gradle
+**/build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar
+
+# Cache of project
+.gradletasknamecache
+
+# # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
+# gradle/wrapper/gradle-wrapper.properties
+
+# End of https://www.gitignore.io/api/haskell,gradle
