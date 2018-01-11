@@ -6,15 +6,18 @@ module Tila.Prelude
   )
 where
 
-import Magicbane as Export
 import Servant.HTML.Lucid as Export
 import Data.Function ((&))
+import Data.Pool
+import Database.Persist.Sql
 
 
-type TilaContext =
-  ( ModLogger
-  , ModMetrics
-  )
+data TilaContext = TilaContext
+  { tilaPool :: Pool SqlBackend
+  }
 
-type TilaApp = MagicbaneApp TilaContext
+type TilaApp = ReaderT TilaContext (EitherT ServantErr IO)
+
+readerToEither :: TilaContext -> TilaApp :~> EitherT ServantErr IO
+readerToEither ctx = Nat $ \x -> runReaderT x cfg
 

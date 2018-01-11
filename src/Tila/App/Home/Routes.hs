@@ -11,5 +11,5 @@ type Routes
 routes = getHome
 
 getHome :: TilaApp Home
-getHome = return (Home "Hello world")
+getHome = return (Home $ [TilPost "Title" "Content" "Author"])
 
