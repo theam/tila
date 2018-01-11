@@ -12,14 +12,17 @@ import Database.Persist.Postgresql
 import Database.Persist.TH
 import Control.Monad.IO.Class (liftIO)
 
-mkPersist sqlSettings [persistLowerCase|
+share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 TilPost
-  postTitle String
-  postContent String
-  postAuthor String
+  postTitle Text
+  postContent Text
+  postAuthor Text
   deriving Show
 |]
 
 data Home = Home
   { homePosts :: [TilPost]
   }
+
+doMigrations :: SqlPersist IO ()
+doMigrations = runMigration migrateAll

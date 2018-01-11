@@ -4,12 +4,29 @@ module Tila.App
 where
 
 import Tila.Prelude
+import Control.Category ((<<<), (>>>))
+
+import Database.Persist.Postgresql
+import Network.Wai.Handler.Warp as Warp (run)
+import Servant.Server
 
 import Tila.App.Routes
+import Tila.App.Home.Model
+
+
+app :: AppConfig -> Application
+app cfg = serve (Proxy :: Proxy Routes) (appToServer cfg)
+
+appToServer :: AppConfig -> Server Routes
+appToServer cfg = enter (convertApp cfg >>> NT Handler) routes
+
+convertApp :: AppConfig -> AppT monad :~> ExceptT ServantErr monad
+convertApp cfg = runReaderTNat cfg <<< NT runApp
+
 
 initContext :: Int
-            -> IO TilaContext
-initContext port = do
+            -> IO AppConfig
+initContext _ = do
   let host = "localhost"
   let port = 5432
   let user = "postgresql"
@@ -17,19 +34,22 @@ initContext port = do
   let dbname = "sialbb"
   let poolCapacity = 10
   let connString =
-        " host=" ++ host
-        " port=" ++ port
-        " user=" ++ user
-        " password=" ++ password
-        " dbname=" ++ dbname
+        " host=" <> host
+        " port=" <> port
+        " user=" <> user
+        " password=" <> password
+        " dbname=" <> dbname
 
   pool <- runStderrLoggingT $
-    createPostgresqlPool connString poolCapacity
-  return $ TilaContext
-    { tilapool = pool
+    _ $ createPostgresqlPool connString poolCapacity
+  runSqlPool doMigrations pool
+  return $ AppConfig
+    { tilaPool = pool
+    , tilaEnvironment = Dev
     }
 
 run :: Int -> IO ()
 run port = do
   ctx <- initContext port
-  defWaiMain $ magicbaneApp (Proxy :: Proxy Routes) EmptyContext ctx routes
+  Warp.run port $
+    app ctx

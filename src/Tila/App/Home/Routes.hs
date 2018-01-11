@@ -10,6 +10,6 @@ type Routes
 
 routes = getHome
 
-getHome :: TilaApp Home
+getHome :: App Home
 getHome = return (Home $ [TilPost "Title" "Content" "Author"])
 
