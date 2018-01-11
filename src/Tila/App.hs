@@ -1,10 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Tila.App
-  (run)
+  (Tila.App.run)
 where
 
 import Tila.Prelude
 import Control.Category ((<<<), (>>>))
+import Data.ByteString (ByteString)
+import qualified Data.ByteString.Char8 as BS
 
 import Database.Persist.Postgresql
 import Network.Wai.Handler.Warp as Warp (run)
@@ -24,24 +26,28 @@ convertApp :: AppConfig -> AppT monad :~> ExceptT ServantErr monad
 convertApp cfg = runReaderTNat cfg <<< NT runApp
 
 
+makePool :: ByteString -> Int -> IO ConnectionPool
+makePool connString poolCapacity = runStdoutLoggingT $
+  createPostgresqlPool connString poolCapacity
+
+
 initContext :: Int
             -> IO AppConfig
 initContext _ = do
   let host = "localhost"
   let port = 5432
-  let user = "postgresql"
+  let user = "postgres"
   let password = "secret"
   let dbname = "sialbb"
   let poolCapacity = 10
   let connString =
-        " host=" <> host
-        " port=" <> port
-        " user=" <> user
-        " password=" <> password
+        " host=" <> host <>
+        " port=" <> show port <>
+        " user=" <> user <>
+        " password=" <> password <>
         " dbname=" <> dbname
 
-  pool <- runStderrLoggingT $
-    _ $ createPostgresqlPool connString poolCapacity
+  pool <- makePool (BS.pack connString) poolCapacity
   runSqlPool doMigrations pool
   return $ AppConfig
     { tilaPool = pool

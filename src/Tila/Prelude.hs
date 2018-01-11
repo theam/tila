@@ -8,14 +8,16 @@ module Tila.Prelude
   )
 where
 
-import ClassyPrelude as Export hiding (Handler)
+import Prelude as Export
+
 import Data.Function ((&))
+import Data.Monoid as Export
 import Control.Monad.Logger as Export
--- import Control.Monad.Reader as Export
-import Control.Monad.Except as Export (MonadError, ExceptT)
+import Control.Monad.Reader as Export
+import Control.Monad.Except as Export
 
 import Data.Pool
-import Database.Persist.Sql
+import Database.Persist.Postgresql
 import Servant as Export
 import Servant.HTML.Lucid as Export
 import Data.Text as Export (Text)
@@ -31,7 +33,7 @@ data DeployEnvironment
 
 -- | All the global configuration for the App
 data AppConfig = AppConfig
-  { tilaPool        :: ConnectionPool
+  { tilaPool        :: Pool SqlBackend
   , tilaEnvironment :: DeployEnvironment
   }
 
