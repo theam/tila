@@ -39,6 +39,7 @@ executable tila
   default-extensions:  DeriveGeneric
                      , TypeOperators
                      , DataKinds
+                     , GADTs
                      , TemplateHaskell
                      , ExtendedDefaultRules
                      , OverloadedStrings
@@ -47,4 +48,7 @@ executable tila
                      , TypeFamilies
                      , NoImplicitPrelude
                      , ScopedTypeVariables
+                     , MultiParamTypeClasses
+                     , QuasiQuotes
+                     , FlexibleContexts
   ghc-options:         -W

@@ -14,6 +14,7 @@ import Servant.Server
 
 import Tila.App.Routes
 import Tila.App.Home.Model
+import qualified Tila.App.Home.Models.TilPost as TilPost
 
 
 app :: AppConfig -> Application
@@ -48,7 +49,7 @@ initContext _ = do
         " dbname=" <> dbname
 
   pool <- makePool (BS.pack connString) poolCapacity
-  runSqlPool doMigrations pool
+  runSqlPool TilPost.doMigrations pool
   return $ AppConfig
     { tilaPool = pool
     , tilaEnvironment = Dev

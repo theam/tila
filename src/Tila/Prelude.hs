@@ -5,6 +5,7 @@ module Tila.Prelude
   , App
   , DeployEnvironment(..)
   , (&)
+  , runDb
   )
 where
 
@@ -33,7 +34,7 @@ data DeployEnvironment
 
 -- | All the global configuration for the App
 data AppConfig = AppConfig
-  { tilaPool        :: Pool SqlBackend
+  { tilaPool        :: ConnectionPool
   , tilaEnvironment :: DeployEnvironment
   }
 
@@ -57,3 +58,9 @@ newtype AppT monad return = AppT
 -- | We specialize our type to 'IO' as it is where we
 -- will execute everything.
 type App = AppT IO
+
+
+runDb :: (MonadReader AppConfig m, MonadIO m) => SqlPersistT IO b -> m b
+runDb query = do
+    pool <- asks tilaPool
+    liftIO $ runSqlPool query pool
