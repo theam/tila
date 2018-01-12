@@ -25,8 +25,8 @@ controller = do
 
 githubDirectories :: App [ContentItem]
 githubDirectories = do
-  items <- retrieve ""
-  return (either (const []) (filterWithItemType ItemDir))
+  items <- retrieveDirectoryItems ""
+  return (withLeftAsEmptyList (filterWithItemType ItemDir) items)
 
 
 makePosts :: [ContentItem] -> App [TilPost]
@@ -38,8 +38,8 @@ tilPostsFromDir :: ContentItem -> App [TilPost]
 tilPostsFromDir dir = do
   let tag = contentName $ contentItemInfo dir
   let path = contentPath $ contentItemInfo dir
-  items <- retrieve path
-  let files = either (const []) (filterWithItemType ItemFile)
+  items <- retrieveDirectoryItems path
+  let files = withLeftAsEmptyList (filterWithItemType ItemFile) items
   maybePosts <- mapM (tilPostFromFile tag) files
   return $ catMaybes maybePosts
 
@@ -50,14 +50,26 @@ tilPostFromFile tag item = do
  where
   makePost tag c = TilPost c "unknown" tag
 
-filterWithItemType :: ContentItemType -> Vector.Vector ContentItem -> [ContentItem]
+filterWithItemType :: ContentItemType -> Vector ContentItem -> [ContentItem]
 filterWithItemType itemType items =
   items
   & Vector.filter (\item -> contentItemType item == itemType)
   & Vector.toList
 
-retrieve :: Text -> App (Either Error Content)
-retrieve path = liftIO $ contentsFor "theam" "til" path Nothing
+
+retrieveDirectoryItems :: Text -> App (Either Error (Vector ContentItem))
+retrieveDirectoryItems path = do
+  contents <- retrieve path
+  return $ fmap extractDirContents contents
+ where
+  retrieve path = liftIO $ contentsFor "theam" "til" path Nothing
+  extractDirContents (ContentDirectory c) = c
+  extractDirContents _ = Vector.empty
+
+
+withLeftAsEmptyList :: (b -> [c]) -> Either a b -> [c]
+withLeftAsEmptyList f = either (const []) f
+
 
 retrieveFileContent :: String -> App (Maybe Text)
 retrieveFileContent path = do

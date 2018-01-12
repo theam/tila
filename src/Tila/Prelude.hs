@@ -11,14 +11,14 @@ where
 
 import Prelude as Export
 
-import Data.Function ((&))
-import Data.Maybe as Export
-import Data.Monoid as Export
 import Control.Monad.Logger as Export
 import Control.Monad.Reader as Export
 import Control.Monad.Except as Export
+import Data.Function ((&))
+import Data.Maybe as Export
+import Data.Monoid as Export
+import Data.Vector as Export (Vector)
 
-import Data.Pool
 import Database.Persist.Postgresql
 import Servant as Export
 import Servant.HTML.Lucid as Export
