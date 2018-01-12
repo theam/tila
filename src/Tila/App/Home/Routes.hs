@@ -12,22 +12,22 @@ import Database.Persist.Postgresql
 import GitHub.Endpoints.Repos.Contents
 import qualified Network.Wreq as Wreq
 
-import Tila.App.Home.Model
+import Tila.App.Home.Models.Page
 import qualified Tila.App.Home.Models.TilPost as TilPost
 import Tila.App.Home.Models.TilPost (TilPost(..))
 import Tila.App.Home.View ()
 
 type Routes
-  = Get '[HTML] Home
+  = Get '[HTML] Page
 
-routes = getHome
+routes = getPage
 
 
-getHome :: App Home
-getHome = do
+getPage :: App Page
+getPage = do
   dirs <- githubDirectories
   posts <- makePosts dirs
-  return (Home posts)
+  return (Page posts)
 
 
 dbPosts :: App [Entity TilPost]

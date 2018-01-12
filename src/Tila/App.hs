@@ -13,7 +13,6 @@ import Network.Wai.Handler.Warp as Warp (run)
 import Servant.Server
 
 import Tila.App.Routes
-import Tila.App.Home.Model
 import qualified Tila.App.Home.Models.TilPost as TilPost
 
 

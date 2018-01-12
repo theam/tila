@@ -4,12 +4,12 @@ import Tila.Prelude
 
 import Lucid
 
-import Tila.App.Home.Model
+import Tila.App.Home.Models.Page
 import Tila.App.Home.Models.TilPost
 
 
-instance ToHtml Home where
+instance ToHtml Page where
   toHtmlRaw = toHtml
-  toHtml content =
-    body_ $ mapM_ (p_ . toHtml . tilPostPostContent) (homePosts content)
+  toHtml page =
+    body_ $ mapM_ (p_ . toHtml . tilPostPostContent) (pagePosts page)
 
