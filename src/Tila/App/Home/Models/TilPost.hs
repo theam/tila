@@ -9,9 +9,9 @@ import Control.Monad.IO.Class (liftIO)
 
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 TilPost
-  postTitle Text
   postContent Text
   postAuthor Text
+  postTag Text
   deriving Show
 |]
 

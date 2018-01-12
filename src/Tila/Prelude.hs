@@ -12,6 +12,7 @@ where
 import Prelude as Export
 
 import Data.Function ((&))
+import Data.Maybe as Export
 import Data.Monoid as Export
 import Control.Monad.Logger as Export
 import Control.Monad.Reader as Export

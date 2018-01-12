@@ -17,6 +17,8 @@ executable tila
   main-is:             Main.hs
   build-depends:       base >= 4.10
                      , bytestring >= 0.10
+                     , github >= 0.18
+                     , lens
                      , lucid >= 2.9
                      , monad-logger >= 0.3
                      , mtl >= 2.2
@@ -28,8 +30,10 @@ executable tila
                      , servant-server
                      , servant-lucid >= 0.7
                      , text >= 1.2
+                     , vector >= 0.12
                      , wai >= 3.2
                      , warp >= 3.2
+                     , wreq
 
 
   hs-source-dirs:      src
@@ -51,4 +55,5 @@ executable tila
                      , MultiParamTypeClasses
                      , QuasiQuotes
                      , FlexibleContexts
+                     , LambdaCase
   ghc-options:         -W
