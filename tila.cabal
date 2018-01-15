@@ -17,6 +17,8 @@ executable tila
   main-is:             Main.hs
   build-depends:       base >= 4.10
                      , bytestring >= 0.10
+                     , cheapskate >= 0.1
+                     , cheapskate-lucid
                      , github >= 0.18
                      , lens
                      , lucid >= 2.9

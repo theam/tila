@@ -5,7 +5,9 @@ where
 import Tila.Prelude
 
 import Control.Lens
+import qualified Data.ByteString.Lazy as LBS
 import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text
 import qualified Data.Vector as Vector
 import Database.Persist
 import Database.Persist.Postgresql
@@ -15,6 +17,7 @@ import qualified Network.Wreq as Wreq
 import Tila.App.Home.Models.Page
 import qualified Tila.App.Home.Models.TilPost as TilPost
 import Tila.App.Home.Models.TilPost (TilPost(..))
+
 
 controller :: App Page
 controller = do
@@ -34,6 +37,7 @@ makePosts dirs = do
   posts <- mapM tilPostsFromDir dirs
   return $ concat posts
 
+
 tilPostsFromDir :: ContentItem -> App [TilPost]
 tilPostsFromDir dir = do
   let tag = contentName $ contentItemInfo dir
@@ -43,12 +47,14 @@ tilPostsFromDir dir = do
   maybePosts <- mapM (tilPostFromFile tag) files
   return $ catMaybes maybePosts
 
+
 tilPostFromFile :: Text -> ContentItem -> App (Maybe TilPost)
 tilPostFromFile tag item = do
   content <- retrieveFileContent (Text.unpack . contentPath $ contentItemInfo item)
   return (fmap (makePost tag) content)
  where
   makePost tag c = TilPost c "unknown" tag
+
 
 filterWithItemType :: ContentItemType -> Vector ContentItem -> [ContentItem]
 filterWithItemType itemType items =
@@ -74,9 +80,8 @@ withLeftAsEmptyList f = either (const []) f
 retrieveFileContent :: String -> App (Maybe Text)
 retrieveFileContent path = do
   r <- liftIO $ Wreq.get url
-  return . Just . Text.pack . show $ r ^. Wreq.responseBody
+  return . Just . Text.decodeUtf8 . LBS.toStrict $ r ^. Wreq.responseBody
  where
   url = "https://raw.githubusercontent.com/theam/til/master/" <> path
 
 
--- return $ either (filterWithItemType ItemDir) (const [])
