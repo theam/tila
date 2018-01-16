@@ -10,7 +10,7 @@ import qualified Tila.App as App
 
 main :: IO ()
 main = do
-  portString <- lookupEnv "EKG_PORT"
+  portString <- lookupEnv "PORT"
   case portString >>= readMaybe of
     Just (port :: Int)
       -> App.run port
