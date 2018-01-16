@@ -20,6 +20,7 @@ executable tila
                      , cheapskate >= 0.1
                      , cheapskate-lucid
                      , github >= 0.18
+                     , heroku
                      , lens
                      , lucid >= 2.9
                      , monad-logger >= 0.3

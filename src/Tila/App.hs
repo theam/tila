@@ -12,6 +12,8 @@ import Database.Persist.Postgresql
 import Network.Wai.Handler.Warp as Warp (run)
 import Servant.Server
 import Servant.Utils.StaticFiles
+import Web.Heroku
+import qualified Data.Text as Text
 
 import Tila.App.Routes
 import qualified Tila.App.Home.Models.TilPost as TilPost
@@ -57,9 +59,22 @@ initContext _ = do
     , tilaEnvironment = Dev
     }
 
+herokuInitContext :: IO AppConfig
+herokuInitContext = do
+  conn <- dbConnParams
+  let poolCapacity = 10
+  let connString = unwords $ map (\(k, v) -> Text.unpack k <> "=" <> Text.unpack v) conn
+  pool <- makePool (BS.pack connString) poolCapacity
+  runSqlPool TilPost.doMigrations pool
+  return $ AppConfig
+    { tilaPool = pool
+    , tilaEnvironment = Dev
+    }
+
+
 run :: Int -> IO ()
 run port = do
   putStrLn $ "Running app on port " <> show port
-  ctx <- initContext port
+  ctx <- herokuInitContext
   Warp.run port $
     app ctx
