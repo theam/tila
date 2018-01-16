@@ -11,16 +11,19 @@ import qualified Data.ByteString.Char8 as BS
 import Database.Persist.Postgresql
 import Network.Wai.Handler.Warp as Warp (run)
 import Servant.Server
+import Servant.Utils.StaticFiles
 
 import Tila.App.Routes
 import qualified Tila.App.Home.Models.TilPost as TilPost
 
+type AppAPI = Routes
+  :<|> "static" :> Raw
 
 app :: AppConfig -> Application
-app cfg = serve (Proxy :: Proxy Routes) (appToServer cfg)
+app cfg = serve (Proxy :: Proxy AppAPI) (appToServer cfg)
 
-appToServer :: AppConfig -> Server Routes
-appToServer cfg = enter (convertApp cfg >>> NT Handler) routes
+appToServer :: AppConfig -> Server AppAPI
+appToServer cfg = enter (convertApp cfg >>> NT Handler) routes :<|> serveDirectoryWebApp "static"
 
 convertApp :: AppConfig -> AppT monad :~> ExceptT ServantErr monad
 convertApp cfg = runReaderTNat cfg <<< NT runApp
@@ -56,6 +59,7 @@ initContext _ = do
 
 run :: Int -> IO ()
 run port = do
+  putStrLn $ "Running app on port " <> show port
   ctx <- initContext port
   Warp.run port $
     app ctx

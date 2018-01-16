@@ -53,7 +53,7 @@ tilPostFromFile tag item = do
   content <- retrieveFileContent (Text.unpack . contentPath $ contentItemInfo item)
   return (fmap (makePost tag) content)
  where
-  makePost tag c = TilPost c "unknown" tag
+  makePost tag c = TilPost (Text.unlines . drop 2 $ Text.lines c) (head $ Text.lines c) tag
 
 
 filterWithItemType :: ContentItemType -> Vector ContentItem -> [ContentItem]

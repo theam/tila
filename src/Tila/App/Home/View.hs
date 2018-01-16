@@ -13,26 +13,43 @@ import Tila.App.Home.Models.TilPost
 instance ToHtml Page where
   toHtmlRaw = toHtml
   toHtml page = do
-    head_ $ do
-      link_
-        [ rel_ "stylesheet"
-        , href_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
-        ]
-      script_
-        [ src_ "https://code.jquery.com/jquery-3.2.1.slim.min.js" ]
-        ""
-      script_
-        [ src_ "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ]
-        ""
-      script_
-        [ src_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" ]
-        ""
+    head_ includes
     body_ $
       div_ [class_ "container"] $ do
         div_ [class_ "row"] $ do
-          div_ [class_ "text-center"] $ do
-            h1_ "Today I Learned"
+          div_ [class_ "col-8 mx-auto"] $ do
+            div_ [class_ "header text-center"] $ do
+              h1_ "Today I Learned"
         renderPosts page
+
+includes :: Monad m => HtmlT m ()
+includes = do
+  link_
+    [ rel_ "stylesheet"
+    , href_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
+    ]
+  link_
+    [ rel_ "stylesheet"
+    , href_ "https://fonts.googleapis.com/css?family=Montserrat:400,500,700,800,900"
+    ]
+  link_
+    [ rel_ "stylesheet"
+    , href_ "https://fonts.googleapis.com/css?family=Karla"
+    ]
+  link_
+    [ rel_ "stylesheet"
+    , href_ "static/style.css"
+    ]
+  script_
+    [ src_ "https://code.jquery.com/jquery-3.2.1.slim.min.js" ]
+    ""
+  script_
+    [ src_ "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" ]
+    ""
+  script_
+    [ src_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" ]
+    ""
+
 
 renderPosts :: Monad m => Page -> HtmlT m ()
 renderPosts page =
@@ -44,8 +61,8 @@ renderPosts page =
 wrapInCard :: Monad m => TilPost -> HtmlT m ()
 wrapInCard post =
   div_ [class_ "row"] $ do
-    div_ [class_ "col-6 mx-auto"] $ do
-      div_ [class_ "text-center"] $ do
+    div_ [class_ "col-8 mx-auto"] $ do
+      div_ [class_ ""] $ do
         div_ [class_ "card post-card"] $ do
           div_ [class_ "card-block"] $
             div_ [class_ "container"] $

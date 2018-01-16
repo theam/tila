@@ -1,0 +1,19 @@
+body, html {
+    height: 100% !important;
+    font-family: "Karla", sans-serif;
+    background-color: black;
+}
+
+.header h1 {
+    font-family: "Montserrat", sans-serif;
+    font-size: 450%;
+    font-weight: 900 !important;
+    padding-bottom: 50px;
+    padding-top: 50px;
+    color: #ffd400;
+}
+
+.post-card .card-block {
+    padding: 25px;
+}
+
