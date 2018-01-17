@@ -58,7 +58,7 @@ instance ToHtml Page where
     body_ $
       div_ [class_ "container"] $ do
         div_ [class_ "row"] $ do
-          div_ [class_ "col-10 mx-auto"] $ do
+          div_ [class_ "col-12 col-sm-10 mx-auto"] $ do
             div_ [class_ "header text-center"] $ do
               h1_ [class_ "logo" ]$ do
                 img_
@@ -66,9 +66,10 @@ instance ToHtml Page where
                   , src_ "http://theam.io/logo_theam@2x.png"
                   , width_ "400"
                   , height_ "132"
+                  , class_ "img-fluid"
                   ]
               h1_ "Today I Learned"
-          div_ [class_ "col-8 mx-auto"] $ do
+          div_ [class_ "col-12 col-sm-8 mx-auto"] $ do
             a_ [ class_ "float-right", href_ "#", onclick_ "openNewFile()" ] $ do
               img_ [ class_ "top-button", src_ "static/img/pencil-256.png", style_ "height:25px;"]
         renderPosts page
@@ -84,7 +85,7 @@ renderPosts page =
 wrapInCard :: Monad m => TilPost -> HtmlT m ()
 wrapInCard post =
   div_ [class_ "row"] $ do
-    div_ [class_ "col-8 mx-auto"] $ do
+    div_ [class_ "col-12 col-sm-8 mx-auto"] $ do
       div_ [class_ ""] $ do
         div_ [class_ "card post-card"] $ do
           div_ [class_ "card-block"] $
