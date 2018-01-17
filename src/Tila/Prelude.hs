@@ -23,6 +23,7 @@ import Database.Persist.Postgresql
 import Servant as Export
 import Servant.HTML.Lucid as Export
 import Data.Text as Export (Text)
+import GitHub.Auth as GitHub
 
 
 -- | On which environment are we running on
@@ -37,6 +38,7 @@ data DeployEnvironment
 data AppConfig = AppConfig
   { tilaPool        :: ConnectionPool
   , tilaEnvironment :: DeployEnvironment
+  , tilaAuth        :: Maybe GitHub.Auth
   }
 
 

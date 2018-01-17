@@ -14,6 +14,7 @@ import Servant.Server
 import Servant.Utils.StaticFiles
 import Web.Heroku
 import qualified Data.Text as Text
+import GitHub.Auth as GitHub
 
 import Tila.App.Routes
 import qualified Tila.App.Home.Models.TilPost as TilPost
@@ -36,8 +37,8 @@ makePool connString poolCapacity = runStdoutLoggingT $
   createPostgresqlPool connString poolCapacity
 
 
-devInitContext :: IO AppConfig
-devInitContext = do
+devInitContext :: Maybe GitHub.Auth -> IO AppConfig
+devInitContext auth = do
   let host = "localhost"
   let port = 5432
   let user = "postgres"
@@ -56,10 +57,11 @@ devInitContext = do
   return $ AppConfig
     { tilaPool = pool
     , tilaEnvironment = Dev
+    , tilaAuth = auth
     }
 
-herokuInitContext :: IO AppConfig
-herokuInitContext = do
+herokuInitContext :: Maybe GitHub.Auth -> IO AppConfig
+herokuInitContext auth = do
   conn <- dbConnParams
   let poolCapacity = 10
   let connString = unwords $ map (\(k, v) -> Text.unpack k <> "=" <> Text.unpack v) conn
@@ -68,17 +70,18 @@ herokuInitContext = do
   return $ AppConfig
     { tilaPool = pool
     , tilaEnvironment = Dev
+    , tilaAuth = auth
     }
 
 
-initContext :: DeployEnvironment -> IO AppConfig
+initContext :: DeployEnvironment -> Maybe GitHub.Auth -> IO AppConfig
 initContext Production = herokuInitContext
 initContext _ = devInitContext
 
 
-run :: DeployEnvironment -> Int -> IO ()
-run env port = do
+run :: Maybe ByteString -> DeployEnvironment -> Int -> IO ()
+run ghToken env port = do
   putStrLn $ "Running app on port " <> show port
-  ctx <- initContext env
+  ctx <- initContext env (GitHub.OAuth <$> ghToken)
   Warp.run port $
     app ctx

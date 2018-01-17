@@ -28,7 +28,8 @@ controller = do
 
 githubDirectories :: App [ContentItem]
 githubDirectories = do
-  items <- retrieveDirectoryItems ""
+  auth <- asks tilaAuth
+  items <- retrieveDirectoryItems auth ""
   return (withLeftAsEmptyList (filterWithItemType ItemDir) items)
 
 
@@ -40,9 +41,10 @@ makePosts dirs = do
 
 tilPostsFromDir :: ContentItem -> App [TilPost]
 tilPostsFromDir dir = do
+  auth <- asks tilaAuth
   let tag = contentName $ contentItemInfo dir
   let path = contentPath $ contentItemInfo dir
-  items <- retrieveDirectoryItems path
+  items <- retrieveDirectoryItems auth path
   let files = withLeftAsEmptyList (filterWithItemType ItemFile) items
   maybePosts <- mapM (tilPostFromFile tag) files
   return $ catMaybes maybePosts
@@ -51,9 +53,9 @@ tilPostsFromDir dir = do
 tilPostFromFile :: Text -> ContentItem -> App (Maybe TilPost)
 tilPostFromFile tag item = do
   content <- retrieveFileContent (Text.unpack . contentPath $ contentItemInfo item)
-  return (fmap (makePost tag) content)
+  return (fmap makePost content)
  where
-  makePost tag c = TilPost (Text.unlines . drop 2 $ Text.lines c) (head $ Text.lines c) tag
+  makePost c = TilPost (Text.unlines . drop 2 $ Text.lines c) (head $ Text.lines c) tag
 
 
 filterWithItemType :: ContentItemType -> Vector ContentItem -> [ContentItem]
@@ -63,12 +65,12 @@ filterWithItemType itemType items =
   & Vector.toList
 
 
-retrieveDirectoryItems :: Text -> App (Either Error (Vector ContentItem))
-retrieveDirectoryItems path = do
-  contents <- retrieve path
+retrieveDirectoryItems :: Maybe Auth -> Text -> App (Either Error (Vector ContentItem))
+retrieveDirectoryItems auth path = do
+  contents <- retrieve auth path
   return $ fmap extractDirContents contents
  where
-  retrieve path = liftIO $ contentsFor "theam" "til" path Nothing
+  retrieve auth' path' = liftIO $ contentsFor' auth' "theam" "til" path' Nothing
   extractDirContents (ContentDirectory c) = c
   extractDirContents _ = Vector.empty
 

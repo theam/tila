@@ -3,27 +3,29 @@ module Main where
 
 import Tila.Prelude
 
+import Data.ByteString.Char8
 import Text.Read
 import System.Environment
 
 import qualified Tila.App as App
 
-getPort :: IO Int
-getPort = do
-  portString <- lookupEnv "PORT"
-  let port = portString >>= readMaybe
-  return $ maybe 8080 id port
 
-
-getDeployEnvironment :: IO DeployEnvironment
-getDeployEnvironment = do
-  envString <- lookupEnv "TILA_ENV"
+fromEnvironmentVariableOrElse :: Read a => String -> a -> IO a
+fromEnvironmentVariableOrElse s def = do
+  envString <- lookupEnv s
   let env = envString >>= readMaybe
-  return $ maybe Dev id env
+  return $ maybe def id env
+
+
+getToken :: IO (Maybe ByteString)
+getToken = do
+  token <- lookupEnv "TILA_GITHUB_TOKEN"
+  return (pack <$> token)
 
 
 main :: IO ()
 main = do
-  port <- getPort
-  env <- getDeployEnvironment
-  App.run env port
+  token <- getToken
+  env <- "TILA_ENV" `fromEnvironmentVariableOrElse` Dev
+  port <- "PORT" `fromEnvironmentVariableOrElse` 8080
+  App.run token env port
