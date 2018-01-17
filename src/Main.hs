@@ -8,11 +8,22 @@ import System.Environment
 
 import qualified Tila.App as App
 
+getPort :: IO Int
+getPort = do
+  portString <- lookupEnv "PORT"
+  let port = portString >>= readMaybe
+  return $ maybe 8080 id port
+
+
+getDeployEnvironment :: IO DeployEnvironment
+getDeployEnvironment = do
+  envString <- lookupEnv "TILA_ENV"
+  let env = envString >>= readMaybe
+  return $ maybe Dev id env
+
+
 main :: IO ()
 main = do
-  portString <- lookupEnv "PORT"
-  case portString >>= readMaybe of
-    Just (port :: Int)
-      -> App.run port
-    Nothing
-      -> App.run 8080
+  port <- getPort
+  env <- getDeployEnvironment
+  App.run env port

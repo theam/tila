@@ -30,7 +30,7 @@ data DeployEnvironment
   = Dev
   | Production
   | Test
-  deriving (Eq, Show)
+  deriving (Eq, Show, Read)
 
 
 -- | All the global configuration for the App
