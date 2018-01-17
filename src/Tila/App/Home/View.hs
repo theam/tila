@@ -16,6 +16,10 @@ instance ToHtml Page where
     head_ $ do
       link_
         [ rel_ "stylesheet"
+        , href_ "https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css"
+        ]
+      link_
+        [ rel_ "stylesheet"
         , href_ "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css"
         ]
       link_
@@ -35,6 +39,9 @@ instance ToHtml Page where
         , href_ "static/style.css"
         ]
       script_
+        [ src_ "https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js" ]
+        ""
+      script_
         [ src_ "https://code.jquery.com/jquery-3.2.1.slim.min.js" ]
         ""
       script_
@@ -47,13 +54,16 @@ instance ToHtml Page where
         [ src_ "static/highlight/highlight.pack.js" ]
         ""
       script_
-        "hljs.initHighlightingOnLoad()"
+        [ src_ "static/til.js" ]
+        ""
     body_ $
       div_ [class_ "container"] $ do
         div_ [class_ "row"] $ do
           div_ [class_ "col-8 mx-auto"] $ do
             div_ [class_ "header text-center"] $ do
               h1_ "Today I Learned"
+            a_ [ href_ "#", onclick_ "openNewFile()" ] $ do
+              img_ [ src_ "static/img/pencil-256.png", style_ "height:25px;"]
         renderPosts page
 
 

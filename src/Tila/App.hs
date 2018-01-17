@@ -36,9 +36,8 @@ makePool connString poolCapacity = runStdoutLoggingT $
   createPostgresqlPool connString poolCapacity
 
 
-initContext :: Int
-            -> IO AppConfig
-initContext _ = do
+initContext :: IO AppConfig
+initContext = do
   let host = "localhost"
   let port = 5432
   let user = "postgres"
@@ -76,5 +75,6 @@ run :: Int -> IO ()
 run port = do
   putStrLn $ "Running app on port " <> show port
   ctx <- herokuInitContext
+  -- ctx <- initContext
   Warp.run port $
     app ctx
