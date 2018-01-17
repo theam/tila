@@ -23,7 +23,6 @@ controller :: App Page
 controller = do
   dirs <- githubDirectories
   posts <- makePosts dirs
-  liftIO $ print posts
   return (Page posts)
 
 

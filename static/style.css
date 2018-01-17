@@ -1,22 +1,36 @@
 body, html {
     height: 100% !important;
-    font-family: "Karla", sans-serif;
-    background-color: black;
+    font-family: "Titillium Web", sans-serif;
+    background-color: #ffffff;
 }
 
 h1 {
-    font-family: "Montserrat", sans-serif;
-    font-weight: 900 !important;
+    font-weight: 700 !important;
     color: black;
 }
 
+.header {
+    margin-top: 40px;
+    margin-bottom: 20px;
+}
+
+.header logo {
+    margin-top: 20px;
+    padding-bottom: 10px;
+}
+
 .header h1 {
-    font-family: "Montserrat", sans-serif;
     font-size: 450%;
-    font-weight: 900 !important;
-    padding-bottom: 50px;
-    padding-top: 50px;
-    color: #ffd400;
+    font-weight: 700 !important;
+    padding-top: -30;
+    color: #fed330;
+}
+
+.card {
+    background-color: #ffffff !important;
+    background-clip: border-box !important;
+    border: 4px solid black !important;
+    border-radius: 0rem;
 }
 
 .post-card .card-block {
@@ -26,5 +40,23 @@ h1 {
 .post-card {
     margin-top: 25px;
     margin-bottom: 25px;
+}
+
+.card-footer {
+    border-radius: 0rem !important;
+    background-clip: border-box !important;
+}
+
+.post-footer {
+    background-color: black !important;
+    color: #ffffff !important;
+}
+
+.post-tag {
+    color: #fed330 !important;
+}
+
+.top-button {
+    filter: invert(100%);
 }
 
