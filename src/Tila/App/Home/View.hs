@@ -53,6 +53,8 @@ instance ToHtml Page where
       script_
         [ src_ "static/til.js" ]
         ""
+      meta_
+        [ name_ "viewport", content_ "width=device-width, initial-scale=1"]
     body_ $
       div_ [class_ "container"] $ do
         div_ [class_ "row"] $ do
